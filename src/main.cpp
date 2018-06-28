@@ -23,14 +23,15 @@ void setup() {
   Serial.begin(9600);
   timeClient.begin();
   timeClient.update();
-  
+
   Serial.println("\n\nWake up");
   Serial.println(timeClient.getFormattedTime());
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+  Serial.print("Trying to connect to: ");
+  Serial.println(ssid);
 
- 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -53,20 +54,20 @@ void setup() {
 
   if (! isnan(temp)) {  // check if 'is not a number'
     Serial.print("Temp *C = "); Serial.println(temp);
-  } else { 
+  } else {
     Serial.println("Failed to read temperature");
   }
-  
+
   if (! isnan(humi)) {  // check if 'is not a number'
     Serial.print("Hum. % = "); Serial.println(humi);
-  } else { 
+  } else {
     Serial.println("Failed to read humidity");
   }
 
-  // convert to microseconds
   ThingSpeak.setField(5,temp);
   ThingSpeak.setField(6,humi);
   ThingSpeak.writeFields(THINKSPEAK_CHANNEL, THINGSPEAK_API_KEY);
+  // convert to microseconds
   ESP.deepSleep(sleepMinutes * 1000000);
 }
 
